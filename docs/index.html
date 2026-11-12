@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Reviews and suggestions. Sends to the feedback Apps Script when config.js has its address.
+       After changing a file here, change the ?v= tag on the links to it. -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Reviews and suggestions · Supa Juice</title>
+  <meta name="theme-color" content="#FFD21F">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="stylesheet" href="app.css?v=20261111f">
+  <link rel="stylesheet" href="shop.css?v=20261111f">
+  <link rel="stylesheet" href="feedback.css?v=20261111f">
+</head>
+<body class="shop">
+  <a class="skip" href="#feedback">Skip to the form</a>
+
+  <header class="bar">
+    <div class="bar-inner">
+      <a class="bar-mark" href="https://supajuice.co.za/orderstrialpage/" aria-label="Supa Juice, back to the shop"><span class="bar-name">Supa Juice</span></a>
+      <nav class="bar-nav" aria-label="Page">
+        <a class="bar-link" href="https://supajuice.co.za/orderstrialpage/#how">How to use</a>
+        <a class="bar-link bar-link--reviews" href="./" aria-current="page">Reviews</a>
+        <a class="bar-cta" href="https://supajuice.co.za/orderstrialpage/#order">Order gels</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="order-panel fb-panel" id="feedback" aria-labelledby="fb-title">
+      <div class="page stack-lg">
+        <header class="order-intro">
+          <h1 class="h-display" id="fb-title">Tell us what you think</h1>
+          <p class="lede">Loved a gel, or have an idea to make them better?<br>We read every one.</p>
+        </header>
+
+        <form id="fb-form" class="fb-card stack-lg" novalidate>
+          <!-- The toggle: a review of the gels, or a suggestion. -->
+          <fieldset class="fb-toggle" id="fb-kind">
+            <legend class="sr-only">What would you like to send?</legend>
+            <label class="fb-toggle-option">
+              <input type="radio" name="kind" value="review" checked>
+              <span>Review</span>
+            </label>
+            <label class="fb-toggle-option">
+              <input type="radio" name="kind" value="suggest">
+              <span>Suggestion</span>
+            </label>
+            <span class="fb-toggle-thumb" aria-hidden="true"></span>
+          </fieldset>
+
+          <!-- Review -->
+          <div class="fb-mode stack-lg" id="fb-review" data-mode="review">
+            <fieldset class="fb-group" id="fb-rating-group">
+              <legend class="fb-legend">How would you rate them?</legend>
+              <div class="fb-stars" id="fb-stars" data-value="0">
+                <label class="fb-star"><input type="radio" name="rating" value="1"><span class="sr-only">1 star</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.83 5.74 6.33.92-4.58 4.46 1.08 6.3L12 17.25l-5.66 2.97 1.08-6.3-4.58-4.46 6.33-.92z"/></svg></label>
+                <label class="fb-star"><input type="radio" name="rating" value="2"><span class="sr-only">2 stars</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.83 5.74 6.33.92-4.58 4.46 1.08 6.3L12 17.25l-5.66 2.97 1.08-6.3-4.58-4.46 6.33-.92z"/></svg></label>
+                <label class="fb-star"><input type="radio" name="rating" value="3"><span class="sr-only">3 stars</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.83 5.74 6.33.92-4.58 4.46 1.08 6.3L12 17.25l-5.66 2.97 1.08-6.3-4.58-4.46 6.33-.92z"/></svg></label>
+                <label class="fb-star"><input type="radio" name="rating" value="4"><span class="sr-only">4 stars</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.83 5.74 6.33.92-4.58 4.46 1.08 6.3L12 17.25l-5.66 2.97 1.08-6.3-4.58-4.46 6.33-.92z"/></svg></label>
+                <label class="fb-star"><input type="radio" name="rating" value="5"><span class="sr-only">5 stars</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.83 5.74 6.33.92-4.58 4.46 1.08 6.3L12 17.25l-5.66 2.97 1.08-6.3-4.58-4.46 6.33-.92z"/></svg></label>
+              </div>
+              <p class="fb-star-word" id="fb-star-word" aria-live="polite"></p>
+              <p class="hint hint-bad" id="fb-rating-error" hidden></p>
+            </fieldset>
+
+            <fieldset class="fb-group">
+              <legend class="fb-legend">Which flavour? <span class="fb-optional">(optional)</span></legend>
+              <div class="fb-choices">
+                <label class="fb-choice"><input type="radio" name="flavour" value="Orange"><span>Orange</span></label>
+                <label class="fb-choice"><input type="radio" name="flavour" value="Cranberry"><span>Cranberry</span></label>
+                <label class="fb-choice"><input type="radio" name="flavour" value="Both"><span>Both</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="fb-group">
+              <legend class="fb-legend">What did you use them for? <span class="fb-optional">(optional, pick any)</span></legend>
+              <div class="fb-choices">
+                <label class="fb-choice"><input type="checkbox" name="used" value="Running"><span>Running</span></label>
+                <label class="fb-choice"><input type="checkbox" name="used" value="Riding"><span>Riding</span></label>
+                <label class="fb-choice"><input type="checkbox" name="used" value="Hiking"><span>Hiking</span></label>
+                <label class="fb-choice"><input type="checkbox" name="used" value="Gym"><span>Gym</span></label>
+                <label class="fb-choice"><input type="checkbox" name="used" value="Something else"><span>Something else</span></label>
+              </div>
+            </fieldset>
+
+            <div class="field">
+              <label for="fb-review-text">Your review <span class="fb-optional">(optional)</span></label>
+              <textarea id="fb-review-text" rows="5" maxlength="600" placeholder="How did they taste? How did your stomach feel halfway through?" aria-describedby="fb-review-count"></textarea>
+              <p class="hint fb-count" id="fb-review-count">0 / 600</p>
+              <p class="hint hint-bad" id="fb-review-text-error" hidden></p>
+            </div>
+
+            <!-- Permission to show the review. Nothing is picked in advance: the customer chooses. -->
+            <fieldset class="fb-group" id="fb-share-group">
+              <legend class="fb-legend">Can we post your review on our website?</legend>
+              <p class="hint" id="fb-share-note">Only your star rating and your words are shown. Never your name, email or any other personal details.</p>
+              <div class="fb-choices">
+                <label class="fb-choice"><input type="radio" name="share" value="yes" aria-describedby="fb-share-note"><span>Yes, post it</span></label>
+                <label class="fb-choice"><input type="radio" name="share" value="no" aria-describedby="fb-share-note"><span>No, keep it private</span></label>
+              </div>
+              <p class="hint hint-bad" id="fb-share-error" hidden></p>
+            </fieldset>
+          </div>
+
+          <!-- Suggestion -->
+          <div class="fb-mode stack-lg" id="fb-suggest" data-mode="suggest" hidden>
+            <fieldset class="fb-group" id="fb-topic-group">
+              <legend class="fb-legend">What is it about?</legend>
+              <div class="fb-choices">
+                <label class="fb-choice"><input type="radio" name="topic" value="A new flavour"><span>A new flavour</span></label>
+                <label class="fb-choice"><input type="radio" name="topic" value="The pouch"><span>The pouch</span></label>
+                <label class="fb-choice"><input type="radio" name="topic" value="Delivery or collection"><span>Delivery or collection</span></label>
+                <label class="fb-choice"><input type="radio" name="topic" value="The website"><span>The website</span></label>
+                <label class="fb-choice"><input type="radio" name="topic" value="Something else"><span>Something else</span></label>
+              </div>
+              <p class="hint hint-bad" id="fb-topic-error" hidden></p>
+            </fieldset>
+
+            <div class="field">
+              <label for="fb-suggest-text">Your idea</label>
+              <textarea id="fb-suggest-text" rows="5" maxlength="600" placeholder="Tell us what you'd change or add." aria-describedby="fb-suggest-count"></textarea>
+              <p class="hint fb-count" id="fb-suggest-count">0 / 600</p>
+              <p class="hint hint-bad" id="fb-suggest-text-error" hidden></p>
+            </div>
+          </div>
+
+          <!-- Shared by both sides. Needed for a review, to check it comes from someone who bought gels;
+               optional for a suggestion. feedback.js sets the label and the note for each side. -->
+          <div class="field">
+            <label for="fb-email">Email <span class="fb-optional" id="fb-email-optional" hidden>(optional)</span></label>
+            <input id="fb-email" type="email" autocomplete="email" inputmode="email" maxlength="120" aria-describedby="fb-email-note">
+            <p class="hint" id="fb-email-note">Don't worry, we won't spam you. It's only to check you bought from us.</p>
+            <p class="hint hint-bad" id="fb-email-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="fb-name">Your name <span class="fb-optional">(optional)</span></label>
+            <input id="fb-name" type="text" autocomplete="given-name" maxlength="60">
+          </div>
+
+          <!-- A field real people never see or fill in. Bots usually do. -->
+          <div class="hp" aria-hidden="true">
+            <label for="fb-website">Leave this empty</label>
+            <input id="fb-website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="alert alert-bad" id="fb-form-error" role="alert" hidden></div>
+          <button type="submit" class="btn btn-primary btn-block" id="fb-send">Send review</button>
+          <p class="fine fb-fine" id="fb-demo-note" hidden>This page isn't connected yet: nothing you write here is sent or saved.</p>
+        </form>
+
+        <section class="fb-card fb-thanks stack" id="fb-thanks" tabindex="-1" aria-labelledby="fb-thanks-title" hidden>
+          <h2 class="fb-thanks-title" id="fb-thanks-title">Thank you!</h2>
+          <p id="fb-thanks-text"></p>
+          <p class="fine" id="fb-thanks-demo" hidden>This page isn't connected yet, so nothing was sent.</p>
+          <div class="fb-thanks-actions">
+            <button type="button" class="btn btn-quiet" id="fb-again">Write another</button>
+            <a class="btn btn-primary" href="https://supajuice.co.za/orderstrialpage/#order">Order gels</a>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <p class="foot-mark">Supa<br>Juice</p>
+        <p class="foot-text">Small-batch energy gels from Cape Town.<br>Collect in Sea Point, or we send them to you.</p>
+      </div>
+      <p class="foot-ig"><a class="foot-ig-link" href="https://www.instagram.com/supajuice.co/" target="_blank" rel="noopener" aria-label="Supa Juice on Instagram, @supajuice.co">@supajuice.co</a></p>
+    </div>
+  </footer>
+
+  <a class="ig-float" id="ig-float" href="https://www.instagram.com/supajuice.co/" target="_blank" rel="noopener" aria-label="Supa Juice on Instagram">
+    <img src="img/instagram.png" alt="" width="54" height="54">
+  </a>
+
+  <script src="config.js?v=20261111f"></script>
+  <script src="feedback.js?v=20261111f"></script>
+  <script src="ig-colour.js?v=20261111f"></script>
+</body>
+</html>

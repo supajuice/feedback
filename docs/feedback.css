@@ -1,0 +1,155 @@
+/*
+  Trial page: reviews and suggestions. The page uses the trial page's look (app.css, shop.css);
+  this file adds the toggle, the stars and the choice chips.
+*/
+
+.fb-panel { padding-top: 40px; }
+.fb-panel .lede { white-space: normal; }
+
+/* The white card with the blue edge, like the order form. */
+.shop .fb-card {
+  padding: 26px 20px 28px;
+  background: #fff;
+  border: 3px solid var(--blue);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--blue);
+}
+@media (min-width: 52rem) {
+  .fb-panel { padding-top: 64px; }
+  .shop .fb-card { padding: 32px 32px 36px; }
+}
+
+/* ---------- The Review / Suggestion toggle ---------- */
+
+.fb-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 4px;
+  border: 3px solid var(--blue);
+  border-radius: 999px;
+  background: #fff;
+}
+.fb-toggle-option {
+  position: relative;
+  z-index: 1;
+  display: block;
+  cursor: pointer;
+}
+.fb-toggle-option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.fb-toggle-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  color: var(--blue);
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1.375rem;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+.fb-toggle-option input:checked + span { color: var(--sun); }
+.fb-toggle-option input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 999px; }
+/* The blue thumb slides under the chosen side. */
+.fb-toggle-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--blue);
+  transition: transform 0.25s cubic-bezier(.3, .8, .3, 1);
+}
+form[data-kind='suggest'] .fb-toggle-thumb { transform: translateX(100%); }
+
+/* ---------- Groups, legends and choice chips ---------- */
+
+/* No margin-top here, so the page's normal spacing between sections still applies. */
+.fb-group { margin-right: 0; margin-bottom: 0; margin-left: 0; padding: 0; border: 0; min-width: 0; }
+.fb-group > * + * { margin-top: 10px; }
+.shop .fb-legend {
+  padding: 0;
+  color: var(--blue);
+  font-weight: 800;
+  font-size: 1.0625rem;
+  letter-spacing: 0.04em;
+}
+.fb-optional { color: var(--muted); font-weight: 500; letter-spacing: 0; }
+
+.fb-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.fb-choice { position: relative; cursor: pointer; }
+.fb-choice input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.fb-choice span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--blue);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.fb-choice:hover span { background: var(--sun-soft); }
+.fb-choice input:checked + span { background: var(--blue); color: #fff; }
+.fb-choice input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* ---------- Stars ---------- */
+
+.fb-stars { display: flex; gap: 4px; }
+.fb-star { position: relative; display: block; cursor: pointer; }
+.fb-star input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.fb-star svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+  fill: #fff;
+  stroke: var(--blue);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  transition: fill 0.15s ease, transform 0.15s ease;
+}
+.fb-star.is-on svg { fill: var(--sun); }
+.fb-star:active svg { transform: scale(0.9); }
+.fb-star input:focus-visible + .sr-only + svg { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+.fb-star-word { min-height: 1.5em; color: var(--blue); font-weight: 700; }
+
+.fb-count { text-align: right; }
+.fb-fine { text-align: center; }
+
+/* ---------- Thank you ---------- */
+
+.shop .fb-thanks-title {
+  color: var(--blue);
+  font-family: var(--font-logo);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 2.25rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.fb-thanks:focus { outline: none; }
+.fb-thanks-actions { display: flex; flex-wrap: wrap; gap: 12px; }
