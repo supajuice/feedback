@@ -73,7 +73,7 @@ test('reviews and suggestions, with a toggle, checked, and sent to the feedback 
   assert.equal(await text(page, '#fb-star-word'), 'Really good');
   assert.equal(await page.isHidden('#fb-rating-error'), true);
   await page.click('.fb-choice:has(input[value="Orange"])');
-  await page.click('.fb-choice:has(input[value="Running"])');
+  await page.click('.fb-choice:has(input[value="Road running"])');
   await page.fill('#fb-review-text', 'Tasted like real oranges, and no stomach trouble on a 21 km run.');
   assert.equal(await text(page, '#fb-review-count'), '64 / 600');
   await page.fill('#fb-name', 'Thandi Mokoena');
@@ -84,7 +84,7 @@ test('reviews and suggestions, with a toggle, checked, and sent to the feedback 
   assert.equal(await page.isHidden('#fb-thanks-demo'), true);
   let row = dev.gas.rows('Reviews')[0];
   assert.deepEqual([row.Stars, row.Flavour, row['Used for'], row.Name, row.Email, row['May post'], row['Verified buyer'], row.Invoice],
-    [4, 'Orange', 'Running', 'Thandi Mokoena', 'thandi@example.com', 'yes', 'yes', 'SJ-0001']);
+    [4, 'Orange', 'Road running', 'Thandi Mokoena', 'thandi@example.com', 'yes', 'yes', 'SJ-0001']);
   assert.equal(row.Review, 'Tasted like real oranges, and no stomach trouble on a 21 km run.');
 
   // A review with only a star, an email and an answer is fine, and No keeps it private.

@@ -148,3 +148,23 @@ test('bad requests get a clear answer', () => {
   t.gas.lock.failNext = true;
   assert.equal(t.review().error, 'busy');
 });
+
+test('the carousel only gets reviews that may be posted, are from a buyer, and Greg marked to show', () => {
+  const { gas, review } = feedback();
+  review({ stars: 5, text: 'Shown one', used: ['Trail running'], flavour: 'Cranberry', name: 'Thandi' });
+  review({ stars: 4, text: 'Not ticked yet' });
+  review({ stars: 5, text: 'Private', share: 'no' });
+  review({ stars: 5, text: 'Not a buyer', email: 'stranger@example.com' });
+  review({ stars: 3, text: 'Also shown', used: ['Road running', 'Gym'] });
+  const sheet = gas.sheet('Reviews');
+  [2, 4, 5, 6].forEach((row) => sheet.getRange(row, 11).setValue('yes')); // not row 3
+  const get = (params) => JSON.parse(gas.ctx.doGet({ parameter: params }).getContent());
+  const out = get({ action: 'reviews' });
+  assert.equal(out.ok, true);
+  assert.deepEqual(out.reviews, [
+    { stars: 3, text: 'Also shown', flavour: '', used: 'Road running, Gym' },
+    { stars: 5, text: 'Shown one', flavour: 'Cranberry', used: 'Trail running' }
+  ]);
+  assert.doesNotMatch(JSON.stringify(out), /thandi|example\.com|SJ-/i, 'no names, emails or invoices');
+  assert.deepEqual(get({}), { ok: true, service: 'feedback' });
+});

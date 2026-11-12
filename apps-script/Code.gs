@@ -14,7 +14,7 @@
  * The page calls this with POST requests. The body is JSON sent as text/plain, which avoids a
  * CORS preflight request (Apps Script cannot answer one).
  *
- * Public actions   review, suggest
+ * Public actions   review, suggest (POST); reviews (GET ?action=reviews, for the shop page's carousel)
  *
  * The reply never says whether an email belongs to a buyer, so nobody can use the form to find
  * out who has ordered. Greg sees that in the Sheet's "Verified buyer" column.
@@ -35,7 +35,11 @@ const SUGGESTION_HEADERS = ['Received', 'Topic', 'Idea', 'Name', 'Email'];
 const SUGGESTION_WIDTHS = [130, 170, 420, 120, 200];
 
 const FLAVOURS = ['Orange', 'Cranberry', 'Both'];
-const USES = ['Running', 'Riding', 'Hiking', 'Gym', 'Something else'];
+// 'Running' is no longer on the page (it became road and trail) but is still accepted from old copies of it.
+const USES = ['Road running', 'Trail running', 'Running', 'Riding', 'Hiking', 'Gym', 'Something else'];
+
+// Most reviews the shop page's carousel gets, newest first.
+const MAX_SHOWN = 30;
 const TOPICS = ['A new flavour', 'The pouch', 'Delivery or collection', 'The website', 'Something else'];
 
 const MAX_TEXT = 600;
@@ -63,8 +67,49 @@ function doPost(e) {
 }
 
 // Opening the web app address in a browser shows that it is alive.
-function doGet() {
+// ?action=reviews gives the reviews Greg has approved, for the carousel on the shop page.
+function doGet(e) {
+  const action = e && e.parameter ? e.parameter.action : '';
+  if (action === 'reviews') {
+    try {
+      return json_({ ok: true, reviews: shownReviews_() });
+    } catch (err) {
+      console.error(err && err.stack ? err.stack : String(err));
+      return json_({ ok: false, reviews: [] });
+    }
+  }
   return json_({ ok: true, service: 'feedback' });
+}
+
+// Reviews with May post: yes, Verified buyer: yes and Show on site: yes, newest first.
+// Only the stars, words, flavour and what they used them for: never a name, email or invoice.
+function shownReviews_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(REVIEWS_TAB);
+  if (!sheet) return [];
+  const last = sheet.getLastRow();
+  if (last < 2) return [];
+  const head = sheet.getRange(1, 1, 1, REVIEW_HEADERS.length).getValues()[0].map(str_);
+  const col = function (h) { return head.indexOf(h); };
+  const c = { stars: col('Stars'), flavour: col('Flavour'), used: col('Used for'), text: col('Review'),
+    post: col('May post'), verified: col('Verified buyer'), show: col('Show on site') };
+  if (c.stars < 0 || c.text < 0 || c.post < 0 || c.verified < 0 || c.show < 0) return [];
+  const yes = function (v) { return str_(v).toLowerCase() === 'yes'; };
+  const out = [];
+  const rows = sheet.getRange(2, 1, last - 1, REVIEW_HEADERS.length).getValues();
+  for (let i = rows.length - 1; i >= 0 && out.length < MAX_SHOWN; i--) {
+    const r = rows[i];
+    if (!yes(r[c.post]) || !yes(r[c.verified]) || !yes(r[c.show])) continue;
+    const stars = Number(r[c.stars]);
+    const text = str_(r[c.text]);
+    if (!(stars >= 1 && stars <= 5) || !text) continue;
+    out.push({
+      stars: Math.round(stars),
+      text: text.slice(0, MAX_TEXT),
+      flavour: c.flavour < 0 ? '' : str_(r[c.flavour]),
+      used: c.used < 0 ? '' : str_(r[c.used])
+    });
+  }
+  return out;
 }
 
 function json_(obj) {
