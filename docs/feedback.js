@@ -264,6 +264,26 @@
 
   // ---------- Start ----------
 
+  // From the review email: #review&stars=4&email=jane%40example.com fills in the stars and the
+  // email. It sits after #, so it never reaches a server; it's taken out of the address at once.
+  function fromEmailLink() {
+    var m = /^#review&(.*)$/.exec(location.hash || '');
+    if (!m) return;
+    var params = {};
+    m[1].split('&').forEach(function (part) {
+      var kv = part.split('=');
+      try { params[kv[0]] = decodeURIComponent(kv.slice(1).join('=')); } catch (err) { /* skip a broken part */ }
+    });
+    var n = Number(params.stars);
+    if (n >= 1 && n <= 5) {
+      var star = form.querySelector('input[name="rating"][value="' + n + '"]');
+      if (star) star.checked = true;
+    }
+    if (params.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(params.email)) $('fb-email').value = params.email.slice(0, 120);
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (err) { /* old browser */ }
+  }
+
+  fromEmailLink();
   showKind(location.hash === '#suggest' ? 'suggest' : 'review', true);
   window.addEventListener('hashchange', function () {
     showKind(location.hash === '#suggest' ? 'suggest' : 'review', true);

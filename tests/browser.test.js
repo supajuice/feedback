@@ -194,3 +194,33 @@ test('when the feedback cannot be sent, it says so and keeps what was written', 
   await page.waitForSelector('#fb-topic-error:not([hidden])');
   assert.match(await text(page, '#fb-topic-error'), /Pick what your idea is about/);
 });
+
+test('a link from the review email fills in the stars and the email, then takes them out of the address', async (t) => {
+  const { dev, page, errors } = await open(t);
+  await page.goto(dev.siteUrl + '/#review&stars=4&email=thandi%40example.com');
+  await page.waitForSelector('#fb-form');
+  assert.equal(await page.locator('input[name="rating"]:checked').getAttribute('value'), '4');
+  assert.equal(await text(page, '#fb-star-word'), 'Really good');
+  assert.equal(await page.inputValue('#fb-email'), 'thandi@example.com');
+  assert.equal(new URL(page.url()).hash, '', 'the email is not left in the address');
+  assert.equal(await page.isVisible('#fb-review'), true);
+  // They only have to answer the question about posting it.
+  await page.click('.fb-choice:has(input[name="share"][value="yes"])');
+  await page.click('#fb-send');
+  await page.waitForSelector('#fb-thanks:not([hidden])');
+  const row = dev.gas.rows('Reviews')[0];
+  assert.deepEqual([row.Stars, row.Email, row['Verified buyer']], [4, 'thandi@example.com', 'yes']);
+
+  // "Write a review" (no stars) and broken values leave the form as it is.
+  await page.goto('about:blank');
+  await page.goto(dev.siteUrl + '/#review&stars=0&email=jane%40example.com');
+  await page.waitForSelector('#fb-form');
+  assert.equal(await page.locator('input[name="rating"]:checked').count(), 0);
+  assert.equal(await page.inputValue('#fb-email'), 'jane@example.com');
+  await page.goto('about:blank');
+  await page.goto(dev.siteUrl + '/#review&stars=9&email=not-an-email');
+  await page.waitForSelector('#fb-form');
+  assert.equal(await page.locator('input[name="rating"]:checked').count(), 0);
+  assert.equal(await page.inputValue('#fb-email'), '');
+  assert.deepEqual(errors, []);
+});
