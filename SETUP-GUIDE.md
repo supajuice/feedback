@@ -58,6 +58,10 @@ If the browser tab with the Sheet was open while setup ran, reload it. You'll se
 
 When `Code.gs` changes later: paste the new code, **Save**, then **Deploy > Manage deployments > pencil > Version: New version > Deploy**. Don't use *New deployment*, which makes a new address.
 
+## Review emails
+
+Every new review emails `REVIEW_ALERT_EMAIL` (set at the top of `Code.gs`, currently supajuice02@gmail.com) with the review and a link to the Reviews tab, so Greg knows there's one to approve. Run **testReviewEmail** once from the editor to allow sending email and get a test message. If an email fails, the review is still saved.
+
 ## Reading the Sheet
 
 **Reviews**

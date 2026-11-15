@@ -26,6 +26,9 @@
 // Constants
 // ---------------------------------------------------------------------------
 
+// Where the "new review, please approve" email goes.
+const REVIEW_ALERT_EMAIL = 'supajuice02@gmail.com';
+
 const REVIEWS_TAB = 'Reviews';
 const SUGGESTIONS_TAB = 'Suggestions';
 
@@ -179,11 +182,37 @@ function saveReview_(body) {
 
   checkRate_();
   const bought = findPurchase_(email);
+  const verified = bought.checked ? (bought.invoice ? 'yes' : 'no') : 'not checked';
   appendRow_(REVIEWS_TAB, [
     nowString_(), stars, flavour, used.join(', '), safe_(text), safe_(name), safe_(email), share,
-    bought.checked ? (bought.invoice ? 'yes' : 'no') : 'not checked', bought.invoice, ''
+    verified, bought.invoice, ''
   ]);
+  notifyReview_({ stars: stars, flavour: flavour, used: used.join(', '), text: text, name: name,
+    email: email, share: share, verified: verified, invoice: bought.invoice });
   return { ok: true };
+}
+
+// Emails Greg about a new review so he can approve it. A mail problem never stops the review being saved.
+function notifyReview_(r) {
+  try {
+    const sheet = tabSheet_(REVIEWS_TAB);
+    const link = SpreadsheetApp.getActiveSpreadsheet().getUrl() + '#gid=' + sheet.getSheetId();
+    const who = r.name || 'Someone';
+    MailApp.sendEmail(REVIEW_ALERT_EMAIL,
+      'New Supa Juice review ' + '★'.repeat(r.stars) + ' from ' + who + ': needs approval',
+      'A new review has come in and is waiting for your approval.\n\n' +
+      'Stars: ' + r.stars + '\n' +
+      'Flavour: ' + (r.flavour || '-') + '\n' +
+      'Used for: ' + (r.used || '-') + '\n' +
+      'Review: ' + (r.text || '(no words, just stars)') + '\n' +
+      'Name: ' + who + '\n' +
+      'Email: ' + r.email + '\n' +
+      'May post: ' + r.share + '\n' +
+      'Verified buyer: ' + r.verified + (r.invoice ? ' (' + r.invoice + ')' : '') + '\n\n' +
+      'To show it on the website, set "Show on site" to "yes":\n' + link);
+  } catch (err) {
+    console.error('Review email failed: ' + (err && err.stack ? err.stack : String(err)));
+  }
 }
 
 function saveSuggestion_(body) {
@@ -333,6 +362,13 @@ function setup() {
   if (spare && spare.getLastRow() === 0 && spare.getLastColumn() === 0 && ss.getSheets().length > 2) ss.deleteSheet(spare);
   Logger.log('Setup done. Reviews and Suggestions tabs are ready.');
   Logger.log(orderSheetId_() ? 'Buyer check: connected to the order Sheet.' : 'Buyer check: add ORDER_SHEET_ID in Script properties (see SETUP-GUIDE.md).');
+}
+
+/** Run once after pasting in new code: Google asks permission to send email, then a test email arrives. */
+function testReviewEmail() {
+  MailApp.sendEmail(REVIEW_ALERT_EMAIL, 'Supa Juice review alerts are ON',
+    'You will now get an email the moment someone leaves a review on the website.');
+  Logger.log('Test email sent to ' + REVIEW_ALERT_EMAIL);
 }
 
 /** Checks that the order Sheet can be read. */
