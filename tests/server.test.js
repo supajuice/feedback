@@ -168,3 +168,25 @@ test('the carousel only gets reviews that may be posted, are from a buyer, and G
   assert.doesNotMatch(JSON.stringify(out), /thandi|example\.com|SJ-/i, 'no names, emails or invoices');
   assert.deepEqual(get({}), { ok: true, service: 'feedback' });
 });
+
+test('every new review emails Greg so he can approve it; suggestions and bot posts do not', () => {
+  const t = feedback();
+  assert.deepEqual(t.review({ stars: 4, flavour: 'Orange', used: ['Gym'], text: 'So tasty', name: 'Thandi' }), { ok: true });
+  assert.equal(t.gas.mail.length, 1);
+  const m = t.gas.mail[0];
+  assert.equal(m.to, 'supajuice02@gmail.com');
+  assert.match(m.subject, /★★★★ from Thandi/);
+  assert.match(m.body, /So tasty/);
+  assert.match(m.body, /Verified buyer: yes \(SJ-0004\)/);
+  assert.match(m.body, /Show on site/);
+  t.suggest();
+  t.review({ website: 'spam' });
+  assert.equal(t.gas.mail.length, 1);
+});
+
+test('a mail problem never stops a review being saved', () => {
+  const t = feedback();
+  t.gas.mailQuota.left = 0;
+  assert.deepEqual(t.review({ text: 'Still saved' }), { ok: true });
+  assert.equal(t.gas.sheet('Reviews').getLastRow(), 2);
+});

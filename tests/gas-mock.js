@@ -114,6 +114,7 @@ class MockSheet {
   insertRowsAfter(after, n) { this.maxRows += n; }
   hideSheet() { this.hidden = true; return this; }
   isSheetHidden() { return !!this.hidden; }
+  getSheetId() { return 0; }
 }
 
 class MockSpreadsheet {
@@ -122,6 +123,7 @@ class MockSpreadsheet {
   insertSheet(n) { const s = new MockSheet(n); this.sheets.push(s); return s; }
   getSheets() { return this.sheets.slice(); }
   deleteSheet(s) { this.sheets = this.sheets.filter((x) => x !== s); }
+  getUrl() { return 'https://docs.google.com/spreadsheets/d/mock/edit'; }
 }
 
 // A blob that remembers its source. Converting HTML to PDF keeps the HTML, so tests can read what the PDF shows.
